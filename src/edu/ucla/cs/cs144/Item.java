@@ -17,7 +17,8 @@ public class Item {
 	public ArrayList<Bid> bids;
 	
 	public Item(){
-		
+		categories = new ArrayList<String>();
+		bids = new ArrayList<Bid>();
 	}
 	
 	
