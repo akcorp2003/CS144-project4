@@ -5,6 +5,10 @@ import java.util.ArrayList;
 public class Item {
 	public String item_id;
 	public String name;
+	public String location;
+	public String country;
+	public String lat;
+	public String longi;
 	public String buy_price;
 	public String first_bid;
 	public String num_bids;

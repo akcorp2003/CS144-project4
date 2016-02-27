@@ -6,6 +6,15 @@
 String itemid = (String) request.getAttribute("id");
 String error = (String) request.getAttribute("error");
 String empty = (String) request.getAttribute("empty");
+String item_loct ="";
+String lat = "";
+String longi = "";
+if(item != null){
+	item_loct = item.location + ", " + item.country;
+	lat = item.lat;
+	longi = item.longi;
+}
+
 
 %>
 
@@ -14,8 +23,61 @@ String empty = (String) request.getAttribute("empty");
 	<title>Item</title>
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
+
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+	<script type="text/javascript" 
+    		src="http://maps.google.com/maps/api/js?key=AIzaSyCv8YhEOYsX2usxs8cQPmfa8TO_CVpbENc"> 
+	</script> 
+	<script type="text/javascript"> 
+		function initialize(){
+			geocoder = new google.maps.Geocoder();
+			var item_loct = "<%= item_loct %>";
+			var latitude = "<%= lat %>";
+			var longitude = "<%= longi %>";
+			geocoder.geocode( {'address': item_loct}, function(results,status){
+				if(status == google.maps.GeocoderStatus.OK){
+					if((latitude !== "") && (longitude !== "")){
+						var item_coord = new google.maps.LatLng(latitude, longitude);
+						var map_settings = {
+							zoom: 14,
+							center: item_coord,
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						};
+						var item_map = new google.maps.Map(document.getElementById("my_itemmap"), map_settings);
+						item_map.setCenter(item_coord);
+						var marker = new google.maps.Marker({
+								map: item_map,
+								position: item_coord
+							}); 
+					}
+					else {
+						var map_settings = {
+							zoom: 14,
+							center: results[0].geometry.location,
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						};
+						var item_map = new google.maps.Map(document.getElementById("my_itemmap"), map_settings);
+						item_map.setCenter(results[0].geometry.location);
+						var marker = new google.maps.Marker({
+							map: item_map,
+							position: results[0].geometry.location
+						}); 
+					}
+				}
+				else{
+					var map_settings = {
+						zoom: 1,
+						center: new google.maps.LatLng(0, 78),
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};
+					var world_map = new google.maps.Map(document.getElementById("my_itemmap"), map_settings);
+				}
+			});
+		}
+	</script>
+	
 </head>
-<body>
+<body onload="initialize()">
 
 
 
@@ -59,9 +121,90 @@ if(empty=="true"){
 
 		
 
-		<p>ID : <%=itemid%></p>
+		<p><strong>ID : </strong> <%=itemid%></p>
 
-		<p>Name: <%= item.name %> </p>
+		<p><strong>Name: </strong> <%= item.name %></p>
+		
+		<p><strong>Buy Price: </strong> <%= item.buy_price %></p>
+		<p><strong>First Bid: </strong> <%= item.first_bid %></p>
+		<p><strong>Number of Bids: </strong> <%=item.num_bids %></p>
+		<p><strong>Seller ID: </strong> <%= item.seller_id %></p>
+		<p><strong>Seller Rating: </strong> <%= item.seller_rating %></p>
+		<%
+			if(item.started == "" || item.started == null){
+		%>
+			<p><strong>Started: </strong> N/A</p>
+		<%
+		}
+		else {
+		%>
+		<p><strong>Started: </strong> <%= item.started %></p>
+		<%
+		}
+		%>
+		<%
+			if(item.ends == "" || item.ends == null){
+		%>
+			<p><strong>Ends: </strong> N/A</p>
+		<%
+		}
+		else {
+		%>
+			<p><strong>Ends: </strong> <%= item.ends %></p>
+		<%
+		}
+		%>
+		<p><strong>Description: </strong> <%= item.desc %></p>
+		<p></p>
+		<table class="table table-striped">
+		<thead>
+			<tr>
+			<th>Category</th>
+			</tr>
+		</thead>
+		<tbody>
+		<%
+			for(int i = 0; i < item.categories.size(); i++){
+		%>
+			<tr>
+			<td><%= (String) item.categories.get(i) %></td>
+			</tr>
+		<%
+		}
+		%>
+		</tbody>
+		</table>
+		<p></p>
+		<table class="table table-striped">
+		<thead>
+			<tr>
+			<th>User ID</th><th>Rating</th><th>Location</th><th>Country</th><th>Time</th><th>Amount</th>
+			</tr>
+		</thead>
+		<tbody>
+		
+		<%
+		for(int i = 0; i < item.bids.size(); i++){
+		%>
+			<tr>
+			<td><%= item.bids.get(i).user_id %></td>
+			<td><%= item.bids.get(i).rating %></td>
+			<td><%= item.bids.get(i).location %></td>
+			<td><%= item.bids.get(i).country %></td>
+			<td><%= item.bids.get(i).time %></td>
+			<td><%= item.bids.get(i).amt %></td>
+			</tr>
+		<%
+		}
+		%>
+		</tbody>
+		</table>
+		<p><strong>Location: </strong> <%= item.location %></p>
+		<p><strong>Country: </strong> <%= item.country %></p>
+		
+		
+		<div id="my_itemmap" style="width:450px; height:350px"></div>
+						
 	<%
 	}
 	%>

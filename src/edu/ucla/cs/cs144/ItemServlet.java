@@ -50,6 +50,18 @@ public class ItemServlet extends HttpServlet implements Servlet {
 			else{
 				item.buy_price = "N/A"; //to avoid warnings on MySQL
 			}
+    		item.country = doc.getElementsByTagName("Country").item(0).getTextContent();
+    		item.location = doc.getElementsByTagName("Location").item(0).getTextContent();
+    		
+    		Element locs = (Element) doc.getElementsByTagName("Location").item(0);
+			if(locs.getAttribute("Latitude") != null){
+				item.lat = locs.getAttribute("Latitude");
+			}
+			String longi = "";
+			if(locs.getAttribute("Longitude") != null){
+				item.longi = locs.getAttribute("Longitude");
+			}
+    		
     		item.first_bid = doc.getElementsByTagName("First_Bid").item(0).getTextContent();
     		item.num_bids = doc.getElementsByTagName("Number_of_Bids").item(0).getTextContent();
     		Element n_userid = (Element) doc.getElementsByTagName("Seller").item(0);

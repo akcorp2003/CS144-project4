@@ -2,6 +2,8 @@
 <%
 	SearchResult [] results = (SearchResult[]) request.getAttribute("results");
 	String q = (String) request.getAttribute("query");
+	int numToSkip = Integer.parseInt(request.getAttribute("numResultsToSkip").toString());
+	int display_on_page = 10;
 	
 %>
 
@@ -21,7 +23,7 @@
 	    </div>
 	    <div id="navbarCollapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Search</a></li>
+                <li class="active"><a href="/eBay/search">Search</a></li>
                 <li><a href="/eBay/item">Items</a></li>
             </ul>
         </div>
@@ -45,6 +47,31 @@
 		</div>
 	</form>
 
+	<div class="btn-group" role="group" aria-label="Navigation buttons">
+		<%
+		if(numToSkip <= 0) {
+		%>
+			<button type="button" class="btn btn-primary" disabled>Previous</button>
+		<%
+		}
+		else {
+		%>
+			<a class="btn btn-primary" href="?query=<%= q %>&numResultsToSkip=<%=numToSkip - 10%>&numResultsToReturn=10">Previous</a>
+		<%
+		}
+		if(results.length > 10){ 
+		%>
+			<a class="btn btn-primary" href="?query=<%= q%>&numResultsToSkip=<%=numToSkip + 10%>&numResultsToReturn=10">Next</a>
+		<%
+		}
+		else {
+		%>
+			<button type="button" class="btn btn-primary" disabled>Next</button>
+		<%
+		}
+		%>
+	</div>
+
 
 	<%
 	if(q == null || q == ""){
@@ -62,6 +89,7 @@
 		</thead>
 		<tbody>
 		<%
+		int counter = 0;
 		for(int i = 0; i < results.length; i++){
 		%>
 			<tr>
@@ -70,7 +98,12 @@
 			<td><%= (String) results[i].getName() %> </td>
 			</tr>
 
-		<%	
+		<%
+			counter++;
+			//only display 10 items
+			if(counter == 10){
+				break;
+			}	
 		} 
 		%>
 		</tbody>
