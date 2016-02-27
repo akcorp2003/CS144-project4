@@ -24,11 +24,15 @@ public class ItemServlet extends HttpServlet implements Servlet {
         // your codes here
     	try{
     		String id = request.getParameter("id");
-    		/*if(id == null || id == ""){
+    		//if no id is provided, the "id" attribute will be null
+    		if(id == null || id == ""){
+    			request.setAttribute("empty", "true");
+    			request.getRequestDispatcher("/item.jsp").forward(request, response);
     			return;
-    		}*/
-    		request.setAttribute("test", "hellothis is a test");
+    		}
     		String itemxml = AuctionSearchClient.getXMLDataForItemId(id);
+    		
+
     		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     		DocumentBuilder builder = factory.newDocumentBuilder();
    			InputSource is = new InputSource(new StringReader(itemxml));
@@ -49,11 +53,13 @@ public class ItemServlet extends HttpServlet implements Servlet {
 			item.seller_id = n_userid.getAttribute("UserID");
     		item.seller_rating = n_userid.getAttribute("Rating");
     		
+    		request.setAttribute("id", id);
     		request.setAttribute("item", item);
     		request.getRequestDispatcher("/item.jsp").forward(request, response);
     		
     	} catch(Exception e){
-    		
+    		request.setAttribute("error", e.getMessage());
+    		request.getRequestDispatcher("/item.jsp").forward(request, response);
     	}
     }
 }
