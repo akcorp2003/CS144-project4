@@ -12,6 +12,34 @@
 	<title>Search</title>
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
+	<script type="text/javascript" src="autosuggest.js"></script>
+
+	<script type="text/javascript">
+        window.onload = function () {
+            var oTextbox = new AutoSuggestControl(document.getElementById("searchtextbox"), new Suggestions());
+        }
+    </script>
+    <style>
+        div.suggestions {
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            border: 1px solid black;
+            position: absolute;   
+            background-color: white;
+        }
+        div.suggestions div {
+            cursor: default;
+            padding: 0px 3px;
+            white-space: nowrap;
+		overflow: hidden;
+            text-overflow: ellipsis;
+	    }
+	    div.suggestions div.current {
+	            background-color: #3366cc;
+	       	color: white;
+	    }
+    </style>
+    
 </head>
 <body>
 
@@ -35,7 +63,7 @@
 		<div class="form-group">
 			<div class="form-group">
 			<label>Search Query</label>
-			<input class="form-control" type="text" name="query" placeholder="Enter your search query">
+			<input class="form-control" type="text" id="searchtextbox" name="query" placeholder="Enter your search query" autocomplete="off">
 			</div>
 
 

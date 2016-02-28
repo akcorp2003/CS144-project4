@@ -24,6 +24,12 @@ if(item != null){
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
 
+	<style>
+	.category{
+		font-size:11px;
+	}
+	</style>
+
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
 	<script type="text/javascript" 
     		src="http://maps.google.com/maps/api/js?key=AIzaSyCv8YhEOYsX2usxs8cQPmfa8TO_CVpbENc"> 
@@ -95,7 +101,7 @@ if(item != null){
     </nav>
 
     <div class="col-xs-12">
-    	<form action="/eBay/item" method="GET" id="searchform">
+    	<form action="/eBay/item" method="GET" id="searchform" autocomplete="off">
 			<div class="form-group">
 				<div class="form-group">
 				<label>Search Items</label>
@@ -119,7 +125,9 @@ if(empty=="true"){
 }else{
 %>
 
-		
+<hr/>
+
+		<h3>Item Information</h3>
 
 		<p><strong>ID : </strong> <%=itemid%></p>
 
@@ -155,30 +163,42 @@ if(empty=="true"){
 		}
 		%>
 		<p><strong>Description: </strong> <%= item.desc %></p>
-		<p></p>
-		<table class="table table-striped">
-		<thead>
-			<tr>
-			<th>Category</th>
-			</tr>
-		</thead>
-		<tbody>
+		
+
+
+		<p><strong>Categories: </strong>
+		
 		<%
 			for(int i = 0; i < item.categories.size(); i++){
 		%>
-			<tr>
-			<td><%= (String) item.categories.get(i) %></td>
-			</tr>
+			
+			<%= (String) item.categories.get(i) %><% if(i < item.categories.size()-1){ %>, <%}%>
 		<%
 		}
 		%>
-		</tbody>
-		</table>
-		<p></p>
+		</p>
+
+		<p><strong>Location: </strong> <%= item.location %></p>
+		<p><strong>Country: </strong> <%= item.country %></p>
+		
+		
+		<div id="my_itemmap" style="width:450px; height:350px"></div>
+					
+
+
+		<hr/>
+		<h3>Bid Information</h3>
+
+
+		<% if(item.bids.size() < 1){ %>
+		<p>There are no current bidders for this item.</p>
+		<% } else{ %>
+
+
 		<table class="table table-striped">
 		<thead>
 			<tr>
-			<th>User ID</th><th>Rating</th><th>Location</th><th>Country</th><th>Time</th><th>Amount</th>
+			<th>Bidder ID</th><th>Rating</th><th>Location</th><th>Country</th><th>Time</th><th>Amount</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -195,19 +215,14 @@ if(empty=="true"){
 			<td><%= item.bids.get(i).amt %></td>
 			</tr>
 		<%
-		}
+		}}
 		%>
-		</tbody>
-		</table>
-		<p><strong>Location: </strong> <%= item.location %></p>
-		<p><strong>Country: </strong> <%= item.country %></p>
-		
-		
-		<div id="my_itemmap" style="width:450px; height:350px"></div>
-						
+
+
 	<%
 	}
 	%>
+	<br/>
 	</div>
 </div>
 </body>
